@@ -11,11 +11,11 @@ describe("testing individual square", () => {
     it("confirm square element is fully implemented", () => {        
         render(
         <MemoryRouter>
-            <MapSquare imgUrl="example/img" altText="example image"/>
+            <MapSquare imgUrl="example/img" altText="example image" map_id={1}/>
         </MemoryRouter>
     )
 
-        const link = screen.getByRole("link", {name: /play map/i})
+        const link = screen.getByRole("link", {name: /play/i})
         const scoreboardBtn = screen.getByRole('button', {name: "Scoreboard"})
 
         expect(link).toBeInTheDocument()
@@ -27,15 +27,29 @@ describe("testing individual square", () => {
         render(
             <MemoryRouter initialEntries={["/"]}>
                 <Routes>
-                    <Route path="/" element={<MapSquare imgUrl="test.jpg" altText="test_img" />} />
-                    <Route path="/test_img" element={<SpecificMap />} />
+                    <Route path="/" element={<MapSquare imgUrl="test.jpg" altText="test_img" map_id={1}/>} />
+                    <Route path="/1" element={<SpecificMap />} />
                 </Routes>
             </MemoryRouter>
         )
 
-        const button = screen.getByRole('link', {name:/play map/i})
+        const button = screen.getByRole('link', {name: /play/i})
         await user.click(button)
 
         expect(screen.getByTestId("counter")).toBeInTheDocument()
+    })
+
+    it("display scoreboard", async () => {
+        const user = userEvent.setup()
+        render(
+            <MemoryRouter>
+                <MapSquare imgUrl="test.jpg" altText="test_img" map_id={1}/>
+            </MemoryRouter>
+        )
+
+        const button = screen.getByRole('button', {name: /scoreboard/i})
+        await user.click(button)
+
+        expect(screen.getByTestId("scoreboard-container")).toBeInTheDocument()
     })
 })
